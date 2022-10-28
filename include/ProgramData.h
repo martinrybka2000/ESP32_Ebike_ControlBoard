@@ -13,6 +13,7 @@ typedef struct ProgramDataStruct
     uint8_t ErrorFlags = 0;
     double ThrottleValue = 0;
     double BatteryTemperature = 0;
+    uint32_t EspSerialNumber;
     VescUart::dataPackage VescData = {0};
     bool ConnectedToHotSpot = false;
 } ProgramData;
