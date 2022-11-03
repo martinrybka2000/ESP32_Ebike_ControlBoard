@@ -2,10 +2,12 @@
 
 #include "ProgramData.h"
 #include "DataSmoother.h"
+#include "TemperatureReader.h"
 
 // main program data
 ProgramData programData;
 DataSmoother dataSmoother(10);
+TemperatureReader temperatureReader();
 
 void setup()
 {
