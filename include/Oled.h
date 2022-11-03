@@ -1,3 +1,6 @@
+#ifndef OLED
+#define OLED
+
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -11,17 +14,17 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 class Oled {
     private:
-        int y=0;
+        int y=0; // position on display
+        unsigned long time = millis();
         
     public:
     Oled() {}
 
     enum valueUnit {TEMPERATURE, PROCENT, SPEED, VOLT, AMPER};
 
-    void setup(){
+    void setup(){ //initiazlization of oled display
         if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
             Serial.println(F("SSD1306 allocation failed"));
-            for(;;);
         }
         delay(2000);
         display.clearDisplay();
@@ -31,57 +34,63 @@ class Oled {
     }
 
     // must be used two times to display
-    void show(String elementName, float elementValue, valueUnit unit, int displayTime)
+    void show(String elementName, float elementValue, valueUnit unit, unsigned long displayTime)
     {
-
-        if(getY() == 0) display.clearDisplay();
-        
-        display.setTextSize(TEXT_SIZE * 0.5);
-        display.setCursor(0, getY());
-        display.print(elementName + ": ");
-        display.setTextSize(TEXT_SIZE);
-        display.setCursor(0, getY()+10);
-        display.print(elementValue);
-        display.print(" ");
-
-        switch (unit)
+        if (millis() - getTime() >= displayTime)
         {
-            case PROCENT:
-                display.print("%"); 
-                break;
-
-            case SPEED:
-                display.print("km/h"); 
-                break;
-
-            case VOLT:
-                display.print("V"); 
-                break;
-
-            case AMPER:
-                display.print("A"); 
-                break;
-
-            case TEMPERATURE:
-                display.setTextSize(TEXT_SIZE * 0.5);
-                display.cp437(true);
-                display.write(167);
-                display.setTextSize(TEXT_SIZE);
-                display.print("C");
-                break;
+            if(getY() == 0) display.clearDisplay();
         
-            default:
-                display.print("ERROR"); 
-                break;
-        }
-        if(getY()==35){
-            display.display();
-            delay(displayTime);
-            setY(0);
+            display.setTextSize(TEXT_SIZE * 0.5);
+            display.setCursor(0, getY());
+            display.print(elementName + ": ");
+            display.setTextSize(TEXT_SIZE);
+            display.setCursor(0, getY()+10);
+            display.print(elementValue);
+            display.print(" ");
+
+            switch (unit)
+            {
+                case PROCENT:
+                    display.print("%"); 
+                    break;
+
+                case SPEED:
+                    display.print("km/h"); 
+                    break;
+
+                case VOLT:
+                    display.print("V"); 
+                    break;
+
+                case AMPER:
+                    display.print("A"); 
+                    break;
+
+                case TEMPERATURE:
+                    display.setTextSize(TEXT_SIZE * 0.5);
+                    display.cp437(true);
+                    display.write(167);
+                    display.setTextSize(TEXT_SIZE);
+                    display.print("C");
+                    break;
+            
+                default:
+                    display.print("ERROR"); 
+                    break;
             }
-        else setY(35);
+            if(getY()==35){
+                display.display();
+                setTime();
+                setY(0);
+                }
+            else setY(35);
+        }
     }
 
     int getY() { return y; }
     void setY(int set) { y = set; }
+    unsigned long getTime() { return time; }
+    void setTime() { time = millis(); }
 };
+
+#endif
