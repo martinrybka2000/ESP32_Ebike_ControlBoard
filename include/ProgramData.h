@@ -4,8 +4,8 @@
 #include "VescUart.h"
 
 // error flags
-#define OLED_COM_BROKEN 0
-#define TEM_SENSOR_COM_BROKEN 1
+#define ERROR_OLED_BROKEN 0
+#define ERROR_TEM_BROKEN 1
 #define ERROR_FLAG_MAX 15
 // etc
 

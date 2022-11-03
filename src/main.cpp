@@ -7,7 +7,7 @@
 // main program data
 ProgramData programData;
 DataSmoother dataSmoother(10);
-TemperatureReader temperatureReader(23);
+TemperatureReader temperatureReader(23, programData);
 
 void setup()
 {
@@ -17,12 +17,12 @@ void setup()
 
   Serial.println("Checking flags");
 
-  writeErrorFlag(programData, OLED_COM_BROKEN);
-  writeErrorFlag(programData, TEM_SENSOR_COM_BROKEN);
+  writeErrorFlag(programData, ERROR_TEM_BROKEN);
+  writeErrorFlag(programData, ERROR_OLED_BROKEN);
   writeErrorFlag(programData, ERROR_FLAG_MAX);
-  resetErrorFlag(programData, TEM_SENSOR_COM_BROKEN);
-  Serial.println(readErrorFlag(programData, OLED_COM_BROKEN));
-  Serial.println(readErrorFlag(programData, TEM_SENSOR_COM_BROKEN));
+  resetErrorFlag(programData, ERROR_TEM_BROKEN);
+  Serial.println(readErrorFlag(programData, ERROR_OLED_BROKEN));
+  Serial.println(readErrorFlag(programData, ERROR_TEM_BROKEN));
   Serial.println(readErrorFlag(programData, ERROR_FLAG_MAX));
 
   Serial.print(programData.ErrorFlags, BIN);
@@ -31,6 +31,6 @@ void setup()
 
 void loop()
 {
-  temperatureReader.ReadTemperature(programData.BatteryTemperature, 1000);
+  temperatureReader.ReadTemperature(programData, 1000);
   delay(1);
 }

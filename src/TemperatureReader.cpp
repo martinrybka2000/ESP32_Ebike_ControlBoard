@@ -2,7 +2,7 @@
 
 #include "TemperatureReader.h"
 
-TemperatureReader::TemperatureReader(int OneWirePin)
+TemperatureReader::TemperatureReader(int OneWirePin, ProgramData &programData)
 {
     // initializing one wire comunication and the ds18b20 class
     if (OneWirePin == -1)
@@ -12,7 +12,11 @@ TemperatureReader::TemperatureReader(int OneWirePin)
 
     sensor = new DallasTemperature(this->oneWire);
     sensor->begin();
-    sensor->getAddress(tempDeviceAddress, 0);
+    if (!sensor->getAddress(tempDeviceAddress, 0))
+    {
+        writeErrorFlag(programData, ERROR_TEM_BROKEN);
+    }
+
     // TODO if addres not found set an error flag
     sensor->setResolution(tempDeviceAddress, SENSOR_RESOLUTION);
 
@@ -31,15 +35,14 @@ TemperatureReader::~TemperatureReader()
         delete sensor;
 }
 
-void TemperatureReader::ReadTemperature(double &batteryTem, unsigned long interval_ms)
+void TemperatureReader::ReadTemperature(ProgramData &programData, unsigned long interval_ms)
 {
     if (millis() - lastTempRequest >= interval_ms)
     {
-        batteryTem = sensor->getTempCByIndex(0);
-        // actual_temperature = batteryTem;
-        if (batteryTem == DEVICE_DISCONNECTED_C)
+        programData.BatteryTemperature = sensor->getTempCByIndex(0);
+        if (programData.BatteryTemperature == DEVICE_DISCONNECTED_C)
         {
-            // write error flag
+            writeErrorFlag(programData, ERROR_TEM_BROKEN);
         }
         sensor->requestTemperatures();
 
@@ -47,6 +50,6 @@ void TemperatureReader::ReadTemperature(double &batteryTem, unsigned long interv
 
         // test
         Serial.print("Tem: ");
-        Serial.println(String(batteryTem));
+        Serial.println(String(programData.BatteryTemperature));
     }
 }

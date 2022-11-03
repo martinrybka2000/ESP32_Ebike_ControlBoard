@@ -21,10 +21,10 @@ private:
     DeviceAddress tempDeviceAddress;
 
 public:
-    TemperatureReader(int OneWirePin);
+    TemperatureReader(int OneWirePin, ProgramData &programData);
     ~TemperatureReader();
 
-    void ReadTemperature(double &batteryTem, unsigned long interval_ms = 2000);
+    void ReadTemperature(ProgramData &programData, unsigned long interval_ms = 2000);
 };
 
 #endif
