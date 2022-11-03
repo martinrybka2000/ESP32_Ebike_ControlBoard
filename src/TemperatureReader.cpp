@@ -36,6 +36,7 @@ void TemperatureReader::ReadTemperature(double &batteryTem, unsigned long interv
     if (millis() - lastTempRequest >= interval_ms)
     {
         batteryTem = sensor->getTempCByIndex(0);
+        // actual_temperature = batteryTem;
         if (batteryTem == DEVICE_DISCONNECTED_C)
         {
             // write error flag
@@ -43,5 +44,9 @@ void TemperatureReader::ReadTemperature(double &batteryTem, unsigned long interv
         sensor->requestTemperatures();
 
         lastTempRequest = millis();
+
+        // test
+        Serial.print("Tem: ");
+        Serial.println(String(batteryTem));
     }
 }
