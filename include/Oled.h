@@ -15,7 +15,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 class Oled {
     private:
         int y=0; // position on display
-        unsigned long time = millis();
+        unsigned long time; // time since last display
         
     public:
     Oled() {}
@@ -26,6 +26,7 @@ class Oled {
         if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
             Serial.println(F("SSD1306 allocation failed"));
         }
+        setTime();
         delay(2000);
         display.clearDisplay();
         display.setTextColor(WHITE);
@@ -68,8 +69,8 @@ class Oled {
 
                 case TEMPERATURE:
                     display.setTextSize(TEXT_SIZE * 0.5);
-                    display.cp437(true);
-                    display.write(167);
+                    display.cp437(true); 
+                    display.write(167); // degrees symbol
                     display.setTextSize(TEXT_SIZE);
                     display.print("C");
                     break;
