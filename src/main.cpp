@@ -14,6 +14,19 @@ void setup()
   Serial.begin(115200);
   Serial.println("Hello world");
   programData.BatteryTemperature = 22.4;
+
+  Serial.println("Checking flags");
+
+  writeErrorFlag(programData, OLED_COM_BROKEN);
+  writeErrorFlag(programData, TEM_SENSOR_COM_BROKEN);
+  writeErrorFlag(programData, ERROR_FLAG_MAX);
+  resetErrorFlag(programData, TEM_SENSOR_COM_BROKEN);
+  Serial.println(readErrorFlag(programData, OLED_COM_BROKEN));
+  Serial.println(readErrorFlag(programData, TEM_SENSOR_COM_BROKEN));
+  Serial.println(readErrorFlag(programData, ERROR_FLAG_MAX));
+
+  Serial.print(programData.ErrorFlags, BIN);
+  Serial.println();
 }
 
 void loop()
