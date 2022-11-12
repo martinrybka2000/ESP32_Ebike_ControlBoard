@@ -16,7 +16,7 @@ public:
 
     void AddData(double data);
     double GetData();
-    void PrintData();
+    // void PrintData();
 };
 
 #endif
