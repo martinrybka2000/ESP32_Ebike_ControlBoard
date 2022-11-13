@@ -12,23 +12,24 @@ ThrottleReader Throttle;
 
 // const
 uint8_t THROTTLE_PIN = A0;
-#define TIMESTAMP 1000
+#define TIMESTAMP 2000
 
 void setup()
 {
-  //Serial.begin(115200);
-  Serial.begin(9600);
+  Serial.begin(115200);
+  //Serial.begin(9600);
   Serial.println("Hello world");
   oled.setup();
   
   //programData.BatteryTemperature = 22.4;
 
 }
-
 void loop()
 {
+  String names[] = {"Battery", "Speed"};
+  float data[] = {Throttle.getThrottleInVoltage(THROTTLE_PIN), Throttle.getThrottleInProcent(THROTTLE_PIN)};
+  Oled::valueUnit units[] = {Oled::VOLT, Oled::SPEED};
+  
   //oled tests
-  oled.show({"Battery", "Speed"}, {10, Throttle.getThrottleInProcent(THROTTLE_PIN)}, {Oled::TEMPERATURE, Oled::SPEED}, TIMESTAMP);
-  //Serial.println(Throttle.getThrottleInProcent(THROTTLE_PIN));
-  delay(50);
+  oled.show(names, data, units, TIMESTAMP);
 }

@@ -16,11 +16,12 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 class Oled {
     private:
         size_t bookmark=0; // iterator for countiong where we are in loop in the "show" method
-        int y=35; // position on display
+         // position on display
         unsigned long time; // time since last display
         
     public:
     Oled() {} // empty constructor
+    int y=35;
 
     enum valueUnit {TEMPERATURE, PROCENT, SPEED, VOLT, AMPER}; // enum to choose in what unit display value
 
@@ -37,19 +38,21 @@ class Oled {
         if (millis() - time >= displayTime) // current time - last time code was done >= how often change display
         {
             if(bookmark >= (sizeof(elementValue) / sizeof(float))) bookmark = 0; // going back to the begining after showing all
-            bookmark += 2; // increment the bookmark to change displayed items
+            else bookmark += 2; // increment the bookmark to change displayed items  
             time = millis(); // wait time
+            
         }
         else 
         {
             display.clearDisplay(); // clear display buffor
             dataLoop(elementName, elementValue, unit); // loop for prepering data for display
             display.display(); // send data to display to display
+            delay(1); // czas na ogarniecie
         }
         
     }
     //TODO add odd number display
-    void dataLoop(String elementName[], float elementValue[], valueUnit unit[]) 
+    void dataLoop(String * elementName, float * elementValue, valueUnit * unit) 
     {
         display.setTextColor(WHITE); 
         
