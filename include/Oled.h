@@ -21,6 +21,7 @@ class Oled {
         
     public:
     Oled() {} // empty constructor
+    
     float bug; // ONLY FOR DEBUGGING
 
     enum valueUnit {TEMPERATURE, PROCENT, SPEED, VOLT, AMPER}; // enum to choose in what unit display value
@@ -51,13 +52,15 @@ class Oled {
         }
         
     }
-    // TODO add odd number display
+
     void dataLoop(String * elementName, float * elementValue, valueUnit * unit) 
     {
         display.setTextColor(WHITE); // clear display and the buffor
         
         for (size_t i = 0; i < ITEMS_TO_DISPLAY; i++) //goes tru loop 2 times for 2 items on display
         {
+            if(bookmark >= (sizeof(*elementValue) / sizeof(float)) && i == 1) break; // displaying odd number of parametrs
+
             display.setTextSize(TEXT_SIZE * 0.5); // size of name of the data
             display.setCursor(0, y*i); // placing cursor on the start of each of the two lines
             display.print(elementName[bookmark+i] + ": "); // printing one of the two element names
