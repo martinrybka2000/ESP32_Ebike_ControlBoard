@@ -16,12 +16,12 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 class Oled {
     private:
         size_t bookmark=0; // iterator for countiong where we are in loop in the "show" method
-         // position on display
+        int y=35; // const value how far is next data display on oled
         unsigned long time; // time since last display
         
     public:
     Oled() {} // empty constructor
-    int y=35;
+    float bug; // ONLY FOR DEBUGGING
 
     enum valueUnit {TEMPERATURE, PROCENT, SPEED, VOLT, AMPER}; // enum to choose in what unit display value
 
@@ -37,9 +37,9 @@ class Oled {
     {
         if (millis() - time >= displayTime) // current time - last time code was done >= how often change display
         {
-            if(bookmark >= (sizeof(elementValue) / sizeof(float))) bookmark = 0; // going back to the begining after showing all
-            else bookmark += 2; // increment the bookmark to change displayed items  
-            time = millis(); // wait time
+            if(bookmark >= (sizeof(*elementValue) / sizeof(float))) bookmark = 0; // going back to the begining after showing all
+            else bookmark += 2; // increment the bookmark to change displayed items 
+            time = millis(); // update wait time
             
         }
         else 
@@ -51,49 +51,49 @@ class Oled {
         }
         
     }
-    //TODO add odd number display
+    // TODO add odd number display
     void dataLoop(String * elementName, float * elementValue, valueUnit * unit) 
     {
-        display.setTextColor(WHITE); 
+        display.setTextColor(WHITE); // clear display and the buffor
         
-        for (size_t i = 0; i < ITEMS_TO_DISPLAY; i++)
+        for (size_t i = 0; i < ITEMS_TO_DISPLAY; i++) //goes tru loop 2 times for 2 items on display
         {
-            display.setTextSize(TEXT_SIZE * 0.5);
-            display.setCursor(0, y*i);
-            display.print(elementName[bookmark+i] + ": ");
-            display.setTextSize(TEXT_SIZE);
-            display.setCursor(0, (y*i) + 10);
-            display.print(elementValue[bookmark+i]);
-            display.print(" ");
+            display.setTextSize(TEXT_SIZE * 0.5); // size of name of the data
+            display.setCursor(0, y*i); // placing cursor on the start of each of the two lines
+            display.print(elementName[bookmark+i] + ": "); // printing one of the two element names
+            display.setTextSize(TEXT_SIZE); // bigger text size for the data
+            display.setCursor(0, (y*i) + 10); // 10 pixels below name data will be printed
+            display.print(elementValue[bookmark+i]); // printing data
+            display.print(" "); // space betwen data and data unit
 
-            switch (unit[bookmark+i])
+            switch (unit[bookmark+i]) // switch statment to determine what unit should be used
             {
             case PROCENT:
-                display.print("%"); 
+                display.print("%");  // procent unit
                 break;
 
             case SPEED:
-                display.print("km/h"); 
+                display.print("km/h"); // speed unit
                 break;
 
             case VOLT:
-                display.print("V"); 
+                display.print("V");  // volts
                 break;
 
             case AMPER:
-                display.print("A"); 
+                display.print("A"); // amperes
                 break;
 
             case TEMPERATURE:
-                display.setTextSize(TEXT_SIZE * 0.5);
-                display.cp437(true); 
+                display.setTextSize(TEXT_SIZE * 0.5); // smaller text for the "degree" symbol
+                display.cp437(true); // code page 437 (special characters)
                 display.write(167); // degres symbol
-                display.setTextSize(TEXT_SIZE);
-                display.print("C");
+                display.setTextSize(TEXT_SIZE); // bigger text size for celcius char
+                display.print("C"); // celcius char
                 break;
             
             default:
-                display.print(" "); 
+                display.print(" "); // NULL handler
                 break;
             }
         }
