@@ -1,4 +1,3 @@
-
 #include "DataSmoother.h"
 
 DataSmoother::DataSmoother(size_t N)
@@ -30,13 +29,13 @@ double DataSmoother::GetData()
     return average / DataQueue->getCount();
 }
 
-void DataSmoother::PrintData()
-{
-    double res;
-    for (size_t i = 0; i < DataQueue->getCount(); i++)
-    {
-        DataQueue->peekIdx(&res, i);
-        Serial.printf("%d: ", i);
-        Serial.println(res);
-    }
-}
+// void DataSmoother::PrintData()
+// {
+//     double res;
+//     for (size_t i = 0; i < DataQueue->getCount(); i++)
+//     {
+//         DataQueue->peekIdx(&res, i);
+//         Serial.println("%d: ", i);
+//         Serial.println(res);
+//     }
+// }
