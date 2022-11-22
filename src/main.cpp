@@ -2,10 +2,12 @@
 
 #include "ProgramData.h"
 #include "DataSmoother.h"
+#include "TemperatureReader.h"
 
 // main program data
 ProgramData programData;
 DataSmoother dataSmoother(10);
+TemperatureReader temperatureReader(23, programData);
 
 void setup()
 {
@@ -13,17 +15,22 @@ void setup()
   Serial.println("Hello world");
   programData.BatteryTemperature = 22.4;
 
-  // data smoother test
-  for (size_t i = 0; i < 20; i++)
-  {
-    dataSmoother.AddData(i);
-  }
-  dataSmoother.PrintData();
+  Serial.println("Checking flags");
+
+  writeErrorFlag(programData, ERROR_TEM_BROKEN);
+  writeErrorFlag(programData, ERROR_OLED_BROKEN);
+  writeErrorFlag(programData, ERROR_FLAG_MAX);
+  resetErrorFlag(programData, ERROR_TEM_BROKEN);
+  Serial.println(readErrorFlag(programData, ERROR_OLED_BROKEN));
+  Serial.println(readErrorFlag(programData, ERROR_TEM_BROKEN));
+  Serial.println(readErrorFlag(programData, ERROR_FLAG_MAX));
+
+  Serial.print(programData.ErrorFlags, BIN);
+  Serial.println();
 }
 
 void loop()
 {
-  Serial.printf("prgoramData.BatterTem = %f\n", programData.BatteryTemperature);
-  Serial.printf("DataSmoother result = %f\n", dataSmoother.GetData());
-  delay(1000);
+  temperatureReader.ReadTemperature(programData, 1000);
+  delay(1);
 }
