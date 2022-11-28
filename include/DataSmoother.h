@@ -5,6 +5,7 @@
 
 #include "cppQueue.h"
 
+// Class form calculating average value of a data streem 
 class DataSmoother
 {
 private:

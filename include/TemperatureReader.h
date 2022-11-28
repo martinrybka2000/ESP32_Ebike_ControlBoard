@@ -7,9 +7,8 @@
 
 #include "ProgramData.h"
 
-// Default pin to plug data wire
-#define ONE_WIRE_PIN_DEFAULT 2
-#define SENSOR_RESOLUTION 10
+#define ONE_WIRE_PIN_DEFAULT 2      // deafault pin to data wire
+#define SENSOR_RESOLUTION 10        // bit resolution of the sensor
 
 class TemperatureReader
 {

@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include "ProgramData.h"
 
+// functions that write, reset and read error flags
+
 void writeErrorFlag(ProgramData &programData, uint16_t errorFlag)
 {
     programData.ErrorFlags |= (1 << errorFlag);

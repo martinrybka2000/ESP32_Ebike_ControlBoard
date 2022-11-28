@@ -4,17 +4,18 @@
 #include "VescUart.h"
 
 // error flags
-#define ERROR_OLED_BROKEN 0
-#define ERROR_TEM_BROKEN 1
-#define ERROR_FLAG_MAX 15
+#define ERROR_OLED_BROKEN 0     // error if the comunication with oled is broken
+#define ERROR_TEM_BROKEN 1      // error if the temperature sensor does not respond
+#define ERROR_FLAG_MAX 15       // maximum value of a flag
 // etc
 
 // Structure for storing all actual data
 typedef struct ProgramDataStruct
 {
     uint16_t ErrorFlags = 0;
-    double ThrottleValue = 0;
-    double BatteryTemperature = 0;
+    float ThrottleValueInPercent = 0;
+    float ThrottleValueInVoltage = 0;
+    float BatteryTemperature = 0;
     uint32_t EspSerialNumber;
     VescUart::dataPackage VescData = {0};
     bool ConnectedToHotSpot = false;

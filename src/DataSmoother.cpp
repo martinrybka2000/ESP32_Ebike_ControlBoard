@@ -1,8 +1,8 @@
 #include "DataSmoother.h"
 
-DataSmoother::DataSmoother(size_t N)
+DataSmoother::DataSmoother(size_t N)                            // creating a new Queue 
 {
-    DataQueue = new cppQueue(sizeof(double), N, FIFO, true);
+    DataQueue = new cppQueue(sizeof(double), N, FIFO, true);    
 }
 
 DataSmoother::~DataSmoother()
@@ -10,16 +10,16 @@ DataSmoother::~DataSmoother()
     delete DataQueue;
 }
 
-void DataSmoother::AddData(double data)
+void DataSmoother::AddData(double data)                         // Adding new values to queue, if overflow the oldest value is overriten
 {
-    DataQueue->push(&data);
+    DataQueue->push(&data);                                     
 }
 
-double DataSmoother::GetData()
+double DataSmoother::GetData()                                  // Calculating the average value of queue values and returning it
 {
     double average = 0;
 
-    for (size_t i = 0; i < DataQueue->getCount(); i++)
+    for (size_t i = 0; i < DataQueue->getCount(); i++)      
     {
         double tem = 0;
         DataQueue->peekIdx(&tem, i);
