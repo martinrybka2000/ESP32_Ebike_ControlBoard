@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <WiFi.h>
 
 #include "ProgramData.h"
 #include "DataSmoother.h"
@@ -19,7 +20,13 @@
 #define TEM_SENSOR_PIN  23  // pin for temperature sensor one wire data
 #define LED_PIN         19  // pin for the onboard led
 #define VESC_SERIAL     Serial1
-#define LED_ONBOARD     2 
+#define LED_ONBOARD     2
+
+#define CNT_WIFI_CONNECTION 20 // hom many times the esp trys to coonect to wifi f.e. 20*100ms = 2s
+
+// wifi hotspot password for testing
+const char* ssid = "Redmi";
+const char* password = "87654123";
 
 
 // Initializing the objects
@@ -38,13 +45,38 @@ Oled::valueUnit units[] = {Oled::VOLT, Oled::SPEED, Oled::TEMPERATURE, Oled::VOL
 void setup()
 {
   Serial.begin(115200);           // serial communication for debuging
-  Serial.println("Hello world");
 
   oled.setup();                   // one time oled setup
   ledBlinker.setup(LED_PIN);      // one time led setup
   ledBlinkerTest.setup(LED_ONBOARD);
 
   vescComunicator.setup(&VESC_SERIAL);  // setting vesc comunicator serial
+
+  // ************** WIFI staff *******************************
+  programData.macAddress = WiFi.macAddress();                   // reading my mac address XX:XX:XX:XX:XX:XX
+  Serial.println("MY mac Address: " + programData.macAddress);  // displaying the mac addres in console
+
+  WiFi.begin(ssid, password);                       // starting connections
+
+  Serial.println("Connecting");                     // trying to coonec to wifi for (CNT * 100ms)ms
+  for (size_t i = 0; i < CNT_WIFI_CONNECTION; i++)
+  {
+    if(WiFi.status() == WL_CONNECTED){              // if connected set status and break
+      programData.ConnectedToHotSpot = true;
+      break;
+    }
+    delay(100);                                     // 100ms delay betwwent connection attemps
+    Serial.print(".");
+  }
+  if(programData.ConnectedToHotSpot){
+    Serial.print("Connected to WiFi with IP Address: ");
+    Serial.println(WiFi.localIP());
+  }
+  else{                                             // if not connected to AP turn off the wifi
+    Serial.println("NO connection turning off wifi");
+    WiFi.disconnect(true);
+  }
+  // ***********************************************************
 }
 
 void loop()

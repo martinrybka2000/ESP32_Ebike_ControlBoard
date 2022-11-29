@@ -20,6 +20,7 @@ public:
         vescUart.setSerialPort(&Serial1); // setting uart vesc comunicator to serial 1
 
         lastDataRequest = millis();         // initial time read
+
     }
 
     void getDataToProgramData(ProgramData &programData, unsigned long interval_ms = 1000)

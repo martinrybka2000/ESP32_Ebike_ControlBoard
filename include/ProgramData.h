@@ -1,6 +1,7 @@
 #ifndef PROGRAM_DATA_H
 #define PROGRAM_DATA_H
 
+#include <Arduino.h>
 #include "VescUart.h"
 
 // error flags
@@ -17,7 +18,7 @@ typedef struct ProgramDataStruct
     float ThrottleValueInPercent = 0;
     float ThrottleValueInVoltage = 0;
     float BatteryTemperature = 0;
-    uint32_t EspSerialNumber;
+    String macAddress;
     VescUart::dataPackage VescData = {0};
     bool ConnectedToHotSpot = false;
 } ProgramData;
