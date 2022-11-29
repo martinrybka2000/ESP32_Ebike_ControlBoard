@@ -6,6 +6,7 @@
 // error flags
 #define ERROR_OLED_BROKEN 0     // error if the comunication with oled is broken
 #define ERROR_TEM_BROKEN 1      // error if the temperature sensor does not respond
+#define ERROR_VESC_BROKEN 2     // error if the vesc does not respond 
 #define ERROR_FLAG_MAX 15       // maximum value of a flag
 // etc
 
