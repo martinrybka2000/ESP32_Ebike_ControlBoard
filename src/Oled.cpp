@@ -8,26 +8,28 @@ Oled::Oled()
 
 }
 
-void Oled::setup()
+void Oled::setup(size_t paramCnt)                       
 {
-    if(!_display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {    // Address 0x3D for 128x64
+    if(!_display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {   // Address 0x3D for 128x64
         Serial.println(F("SSD1306 allocation failed")); // check if there is display
     }
     lastSwithTime = millis();       // get init time
     lastrefreshTime = millis();     // get init time
-    _display.clearDisplay();         // all this is setup
+    _display.clearDisplay();        // all this is setup
+
+    itemsToDisplay = paramCnt;      // u have to pass how many parametrs are in the data arrayes
 }
 
 void Oled::show(String elementName[], float elementValue[], valueUnit unit[], unsigned long swithTime, unsigned long refreshTime)
 {
     if(millis() - lastrefreshTime >= refreshTime)       // current time - last time code was done >= how often refresh display
     {
+         
         if (millis() - lastSwithTime >= swithTime)      // current time - last time code was done >= how often swith display
         {
-            if(bookmark >= (sizeof(*elementValue) / sizeof(float))) bookmark = 0; // going back to the begining after showing all
-            else bookmark += 2;                         // increment the bookmark to change displayed items 
+            bookmark += 2;                         // increment the bookmark to change displayed items 
+            if(bookmark >= itemsToDisplay) bookmark = 0; // going back to the begining after showing all
             lastSwithTime = millis();                   // update wait time
-                
         }
         else 
         {
@@ -47,7 +49,8 @@ void Oled::dataLoop(String * elementName, float * elementValue, valueUnit * unit
         
     for (size_t i = 0; i < ITEMS_TO_DISPLAY; i++) //goes tru loop 2 times for 2 items on display
     {
-        if(bookmark >= (sizeof(*elementValue) / sizeof(float)) && i == 1) break; // displaying odd number of parametrs
+        
+        if(bookmark+i >= itemsToDisplay && i == 1) break; // displaying odd number of parametrs
 
         _display.setTextSize(TEXT_SIZE * 0.5); // size of name of the data
         _display.setCursor(0, y*i); // placing cursor on the start of each of the two lines
