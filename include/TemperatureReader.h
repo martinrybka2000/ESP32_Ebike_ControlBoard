@@ -23,7 +23,7 @@ public:
     TemperatureReader(int OneWirePin, ProgramData &programData);
     ~TemperatureReader();
 
-    void ReadTemperature(ProgramData &programData, unsigned long interval_ms = 2000);
+    void ReadTemperatureToProgramData(ProgramData &programData, unsigned long interval_ms = 2000);
 };
 
 #endif

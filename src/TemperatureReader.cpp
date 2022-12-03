@@ -33,7 +33,7 @@ TemperatureReader::~TemperatureReader()
         delete sensor;
 }
 
-void TemperatureReader::ReadTemperature(ProgramData &programData, unsigned long interval_ms)
+void TemperatureReader::ReadTemperatureToProgramData(ProgramData &programData, unsigned long interval_ms)
 {
     if (millis() - lastTempRequest >= interval_ms)                      // if set time interval has passed
     {
