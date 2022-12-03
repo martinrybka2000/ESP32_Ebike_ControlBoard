@@ -16,6 +16,7 @@ class Oled {
         int y = 35;                     // const value how far is next data display on oled
         unsigned long lastSwithTime;    // time since last swith
         unsigned long lastrefreshTime;  // time since last refresh
+        size_t itemsToDisplay;          // Becasue C is so low somehow I have to pass size of passed arrays size there it is
         
     public:
         Oled();                     // empty constructor
@@ -24,7 +25,7 @@ class Oled {
 
         enum valueUnit {TEMPERATURE, PROCENT, SPEED, VOLT, AMPER}; // enum to choose in what unit display value
 
-        void setup();               // initiazlization of oled display
+        void setup(size_t paramCnt);// initiazlization of oled display
 
         void show(String elementName[], float elementValue[], valueUnit unit[], unsigned long swithTime, unsigned long refreshTime);
 

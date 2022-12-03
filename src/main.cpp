@@ -24,15 +24,15 @@ ThrottleReader throttle;
 TemperatureReader temperatureReader(TEM_SENSOR_PIN, programData);
 LEDBlinker ledBlinker;
 
-String names[] = {"Battery", "Speed", "Battery"};                       // display name of the data
-Oled::valueUnit units[] = {Oled::VOLT, Oled::SPEED, Oled::TEMPERATURE}; // unit of the data chosen from enum inside oled class
+String names[] = {"Battery", "Speed", "Battery", "Test1", "Test2", "Test3", "Test4", "Test5"};                       // display name of the data
+Oled::valueUnit units[] = {Oled::VOLT, Oled::SPEED, Oled::TEMPERATURE, Oled::PROCENT, Oled::AMPER, Oled::PROCENT, Oled::AMPER, Oled::AMPER}; // unit of the data chosen from enum inside oled class
 
 void setup()
 {
   Serial.begin(115200);           // serial communication for debuging
   Serial.println("Hello world");
 
-  oled.setup();                   // one time oled setup
+  oled.setup(sizeof(names)/ sizeof(names[0]));     // one time oled setup (needs arrey size)
   ledBlinker.setup(LED_PIN);      // one time led setup
 }
 
@@ -41,7 +41,7 @@ void loop()
   throttle.getThrootleToProgramData(programData, THROTTLE_PIN, THROTTLE_TIME_INTERVAL_MS);
 
   // oled tests
-  float data[] = {programData.ThrottleValueInVoltage, programData.ThrottleValueInPercent, programData.BatteryTemperature}; // data to display
+  float data[] = {programData.ThrottleValueInVoltage, programData.ThrottleValueInPercent, programData.BatteryTemperature, 69, 100, 15, 20, 35}; // data to display
   oled.show(names, data, units, OLED_SWITH_INTERVAL_MS, OLED_SHOW_INTERVAL_MS); // method to display data on oled
   //Serial.println(oled.bug); // FOR DEBUGING
 
