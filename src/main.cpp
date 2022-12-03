@@ -39,14 +39,15 @@ VESCComunicator vescComunicator;
 LEDBlinker ledBlinker;
 LEDBlinker ledBlinkerTest;
 
-String names[] = {"Battery", "Speed", "Battery", "Test"};                       // display name of the data
-Oled::valueUnit units[] = {Oled::VOLT, Oled::SPEED, Oled::TEMPERATURE, Oled::VOLT}; // unit of the data chosen from enum inside oled class
+
+String names[] = {"Battery", "Speed", "Battery", "Test1", "Test2", "Test3", "Test4", "Test5"};                       // display name of the data
+Oled::valueUnit units[] = {Oled::VOLT, Oled::SPEED, Oled::TEMPERATURE, Oled::PROCENT, Oled::AMPER, Oled::PROCENT, Oled::AMPER, Oled::AMPER}; // unit of the data chosen from enum inside oled class
 
 void setup()
 {
   Serial.begin(115200);           // serial communication for debuging
 
-  oled.setup();                   // one time oled setup
+  oled.setup(sizeof(names)/ sizeof(names[0]));     // one time oled setup (needs arrey size)
   ledBlinker.setup(LED_PIN);      // one time led setup
   ledBlinkerTest.setup(LED_ONBOARD);
 
@@ -91,7 +92,9 @@ void loop()
   temperatureReader.ReadTemperatureToProgramData(programData, TEM_SENSOR_TIME_INTERVAL_MS);
 
   // oled tests
-  float data[] = {programData.ThrottleValueInVoltage, programData.ThrottleValueInPercent, programData.BatteryTemperature, programData.VescData.rpm, 100}; // data to display
+
+  float data[] = {programData.ThrottleValueInVoltage, programData.ThrottleValueInPercent, programData.BatteryTemperature, 69, 100, 15, 20, 35}; // data to display
+
   oled.show(names, data, units, OLED_SWITH_INTERVAL_MS, OLED_SHOW_INTERVAL_MS); // method to display data on oled
   //Serial.println(oled.bug); // FOR DEBUGING
 
