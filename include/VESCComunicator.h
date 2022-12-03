@@ -36,7 +36,7 @@ public:
 
             lastDataRequest = millis();                         // reading time 
             // test debug
-            Serial.println("VESC ERROR FLAG: " + String(readErrorFlag(programData, ERROR_VESC_BROKEN)));
+            // Serial.println("VESC ERROR FLAG: " + String(readErrorFlag(programData, ERROR_VESC_BROKEN)));
         }
 
     }
