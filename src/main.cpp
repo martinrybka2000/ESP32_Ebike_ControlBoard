@@ -10,23 +10,7 @@
 #include "TemperatureReader.h"
 #include "LEDBlinker.h"
 #include "VESCComunicator.h"
-
-#if !( defined(ESP8266) ||  defined(ESP32) )
-  #error This code is intended to run on the ESP8266 or ESP32 platform! Please check your Tools->Board setting.
-#endif
-
-// Level from 0-4
-#define ASYNC_HTTP_DEBUG_PORT     Serial
-#define _ASYNC_HTTP_LOGLEVEL_     4
-
-#define ASYNC_HTTP_REQUEST_GENERIC_VERSION_MIN_TARGET      "AsyncHTTPRequest_Generic v1.10.2"
-#define ASYNC_HTTP_REQUEST_GENERIC_VERSION_MIN             1010002
-
-// Seconds for timeout, default is 3s
-#define DEFAULT_RX_TIMEOUT           10
-
-// Uncomment for certain HTTP site to optimize
-//#define NOT_SEND_HEADER_AFTER_CONNECTED        true
+#include "ServerSender.h"
 
 // To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
 #include <AsyncHTTPRequest_Generic.h>             // https://github.com/khoih-prog/AsyncHTTPRequest_Generic
@@ -38,6 +22,7 @@
 #define TEM_SENSOR_TIME_INTERVAL_MS 1000 // how often to read the temperature value
 #define LED_BLINK_TIME_INTERVAL_MS  2000 // how often the led should blink
 #define VESC_DATA_READ_INTERVAL_MS  500  // how often should i read data from vesc
+#define SERVER_POST_DATA_INTERVAL_MS 2000 // how often should the data be send to the server
 
 #define THROTTLE_PIN    A6  // analog input from throttle
 #define TEM_SENSOR_PIN  23  // pin for temperature sensor one wire data
@@ -53,9 +38,7 @@
 const char* ssid = "Dlink_2_4";
 const char* password = "Ceqlk123";
 
-String backend_url("http://35.158.118.191/");
-
-// String backend_url("http://fad18710-c488-4194-9f3e-8c935b8d4c04.mock.pstmn.io/");
+String backend_url("http://35.158.118.191/"); //backend ip
 
 // Initializing the objects
 ProgramData programData;
@@ -66,80 +49,10 @@ TemperatureReader temperatureReader(TEM_SENSOR_PIN, programData);
 VESCComunicator vescComunicator;
 LEDBlinker ledBlinker;
 LEDBlinker ledBlinkerTest;
+ServerSender serverSender;
 
 String names[] = {"Battery", "Speed", "Battery", "Test1", "Test2", "Test3", "Test4", "Test5"};                       // display name of the data
 Oled::valueUnit units[] = {Oled::VOLT, Oled::SPEED, Oled::TEMPERATURE, Oled::PROCENT, Oled::AMPER, Oled::PROCENT, Oled::AMPER, Oled::AMPER}; // unit of the data chosen from enum inside oled class
-
-unsigned long lastTime = 0;
-unsigned long timerDelay = 1000;
-
-AsyncHTTPRequest request;
-StaticJsonDocument<256> doc;
-
-void sendRequest()
-{
-  static bool requestOpenResult;
-
-  if (request.readyState() == readyStateUnsent || request.readyState() == readyStateDone)
-  {
-    requestOpenResult = request.open("POST", backend_url.c_str());
-
-    if (requestOpenResult)
-    {
-      // Only send() if open() returns true, or crash
-      // request.send();
-      String body;
-      doc.clear();
-      doc["board_mac"] = programData.macAddress;
-      doc["time_stamp"] = "1939-09-01T10:00:00";
-      doc["battery_temp"] = programData.BatteryTemperature;
-      doc["throttle_value"] = programData.ThrottleValueInPercent;
-      doc["motor_current"] = programData.VescData.avgMotorCurrent;
-      doc["input_current"] = programData.VescData.avgInputCurrent;
-      doc["duty_cycle_now"] = programData.VescData.dutyCycleNow;
-      doc["rpm"] = programData.VescData.rpm;
-      doc["input_voltage"] = programData.VescData.inpVoltage;
-      doc["amp_hours"] = programData.VescData.ampHours;
-      doc["amp_hours_charged"] = programData.VescData.ampHoursCharged;
-      doc["watt_hours"] = programData.VescData.wattHours;
-      doc["watt_hours_charged"] = programData.VescData.wattHoursCharged;
-      doc["mosfet_temp"] = programData.VescData.tempMosfet;
-      doc["motor_temp"] = programData.VescData.tempMotor;
-      doc["error_code"] = programData.VescData.error;
-
-      serializeJson(doc, body);
-
-      request.send(body);
-    }
-    else
-    {
-      Serial.println(F("Can't send bad request"));
-    }
-  }
-  else
-  {
-    Serial.println(F("Can't send request"));
-  }
-}
-
-void requestCB(void *optParm, AsyncHTTPRequest *request, int readyState)
-{
-  (void) optParm;
-
-  if (readyState == readyStateDone)
-  {
-    AHTTP_LOGDEBUG(F("\n**************************************"));
-    AHTTP_LOGDEBUG1(F("Response Code = "), request->responseHTTPString());
-
-    if (request->responseHTTPcode() == 200)
-    {
-      Serial.println(F("\n**************************************"));
-      Serial.println(request->responseText());
-      Serial.println(F("**************************************"));
-    }
-  }
-}
-
 
 void setup()
 {
@@ -168,18 +81,14 @@ void setup()
     delay(100);                                     // 100ms delay betwwent connection attemps
     Serial.print(".");
   }
-  if(programData.ConnectedToHotSpot){
+  if(programData.ConnectedToHotSpot){               // if connected to hotspot add rest of the backed url and setup the request sender
     Serial.print("Connected to WiFi with IP Address: ");
     Serial.println(WiFi.localIP());
 
     backend_url += "data/board/" + programData.macAddress + "/livedata";  // adding acaddres to backend data
     
+    serverSender.setup(backend_url);
     Serial.println(backend_url);
-
-    request.setDebug(false);
-    request.onReadyStateChange(requestCB);
-
-    sendRequest();
   }
   else{                                             // if not connected to AP turn off the wifi
     Serial.println("NO connection turning off wifi");
@@ -210,15 +119,7 @@ void loop()
   ledBlinkerTest.Blink(100);
 
   // sending post request
-  if ((millis() - lastTime) > timerDelay) {
-    //Check WiFi connection status
-    unsigned long timenow = micros();
-    sendRequest();
-    lastTime = millis();
-
-    unsigned long elapsedTime = micros() - timenow;
-    Serial.printf("Elapsed time in microsecods: %lu\n", elapsedTime);
-  }
+  serverSender.SendRequestEvent(programData, SERVER_POST_DATA_INTERVAL_MS);
 
   delay(1);   // one ms delay
 }
