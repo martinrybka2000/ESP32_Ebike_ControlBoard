@@ -17,7 +17,8 @@ void ServerSender::sendAsyncRequest(ProgramData &programData){
             if (requestOpenResult)
             {
                 // Only send() if open() returns true, or crash   
-                // creating the json file structure        
+                // creating the json file structure
+                // doc.clear();
                 doc["board_mac"] = programData.macAddress;
                 doc["time_stamp"] = "1939-09-01T10:00:00";
                 doc["battery_temp"] = programData.BatteryTemperature;
@@ -35,7 +36,9 @@ void ServerSender::sendAsyncRequest(ProgramData &programData){
                 doc["motor_temp"] = programData.VescData.tempMotor;
                 doc["error_code"] = programData.VescData.error;
 
-                serializeJson(doc, body);   // writing the json text to a string
+                body = "";
+                serializeJson(doc, body); // writing the json text to a string
+                Serial.println(body);
 
                 request.send(body);         // sending the json string
             }
