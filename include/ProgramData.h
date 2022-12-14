@@ -26,5 +26,6 @@ typedef struct ProgramDataStruct
 void writeErrorFlag(ProgramData &programData, uint16_t errorFlag);
 void resetErrorFlag(ProgramData &programData, uint16_t errorFlag);
 bool readErrorFlag(ProgramData &programData, uint16_t errorFlag);
+void printProgramData(ProgramData &programData);
 
 #endif

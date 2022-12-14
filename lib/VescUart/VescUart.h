@@ -8,6 +8,7 @@
 
 #define BLDC_MAX_CURRENT 30
 #define ADC_RESOLUTION 1023
+#define MAX_PERCENT 100.0
 
 class VescUart
 {
@@ -239,6 +240,7 @@ private:
 
 public:
   double AdcToCurrent(double adc);
+  double PercentToCurrent(double adc);
 };
 
 #endif

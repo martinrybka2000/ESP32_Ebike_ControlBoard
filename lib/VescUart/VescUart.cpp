@@ -523,3 +523,8 @@ double VescUart::AdcToCurrent(double adc)
 {
 	return adc * BLDC_MAX_CURRENT / ADC_RESOLUTION;
 }
+
+double VescUart::PercentToCurrent(double adc)
+{
+	return adc * BLDC_MAX_CURRENT / MAX_PERCENT;
+}
