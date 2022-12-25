@@ -29,7 +29,7 @@ public:
         {
             toggle ^= HIGH;               // switching the state
             digitalWrite(myLedPin, toggle); // writing the state to pin
-            lastInterval = millis();        // update wait time
+            lastInterval = millis();        // update wait time            
         }
     }
 };

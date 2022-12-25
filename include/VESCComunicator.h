@@ -10,6 +10,7 @@ class VESCComunicator
 private:
     VescUart vescUart;
     unsigned long lastDataRequest;
+    unsigned long lastThrootleWrite;
 
 public:
     VESCComunicator(/* args */);
@@ -35,10 +36,21 @@ public:
                 writeErrorFlag(programData, ERROR_VESC_BROKEN); // else set error flag
 
             lastDataRequest = millis();                         // reading time 
-            // test debug
-            Serial.println("VESC ERROR FLAG: " + String(readErrorFlag(programData, ERROR_VESC_BROKEN)));
+            
+            // debug
+            printProgramData(programData);
         }
 
+    }
+
+    void writeThrootleValue(ProgramData &programData, unsigned long interval_ms = 1000)
+    {
+        if (millis() - lastThrootleWrite >= interval_ms)          // if set time interval has passed
+        {
+            vescUart.setCurrent(vescUart.PercentToCurrent(programData.ThrottleValueInPercent)); // sending current value to vesc
+
+            lastThrootleWrite = millis();                         // reading time 
+        }
     }
 };
 
