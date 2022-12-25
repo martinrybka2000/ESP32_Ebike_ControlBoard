@@ -15,7 +15,6 @@
 // To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
 #include <AsyncHTTPRequest_Generic.h>             // https://github.com/khoih-prog/AsyncHTTPRequest_Generic
 
-
 #define OLED_SHOW_INTERVAL_MS       300  // how often to show neewest data
 #define OLED_SWITH_INTERVAL_MS      2000 // how often change displayed data, should be bigger that OLED_SHOW_INTERVAL_MS
 #define THROTTLE_TIME_INTERVAL_MS   50   // how often o read the throotle value
@@ -28,7 +27,7 @@
 #define THROTTLE_PIN    A6  // analog input from throttle
 #define TEM_SENSOR_PIN  23  // pin for temperature sensor one wire data
 #define LED_PIN         19  // pin for the onboard led
-#define VESC_SERIAL     Serial1
+#define VESC_SERIAL     Serial2
 
 #define CNT_WIFI_CONNECTION 20 // hom many times the esp trys to coonect to wifi f.e. 20*100ms = 2s
 
