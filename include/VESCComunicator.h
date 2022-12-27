@@ -8,7 +8,7 @@
 class VESCComunicator
 {
 private:
-    VescUart vescUart;
+    VescUart *vescUart;
     unsigned long lastDataRequest;
     unsigned long lastThrootleWrite;
 
@@ -18,7 +18,9 @@ public:
 
     void setup(Stream *serialport)
     {
-        vescUart.setSerialPort(&Serial1); // setting uart vesc comunicator to serial 1
+        vescUart = new VescUart(30);        // setting the timeout
+        vescUart->setSerialPort(serialport); // setting uart vesc comunicator to serial 1
+        vescUart->setDebugPort(&Serial);
 
         lastDataRequest = millis();         // initial time read
 
@@ -28,8 +30,8 @@ public:
     {
         if (millis() - lastDataRequest >= interval_ms)          // if set time interval has passed
         {
-            if(vescUart.getVescValues()){                        // trying to read vesc data
-                programData.VescData = vescUart.data;           // if succesful save it to program data
+            if(vescUart->getVescValues()){                        // trying to read vesc data
+                programData.VescData = vescUart->data;           // if succesful save it to program data
                 resetErrorFlag(programData, ERROR_VESC_BROKEN); // reset the error flag
             }
             else
@@ -47,7 +49,8 @@ public:
     {
         if (millis() - lastThrootleWrite >= interval_ms)          // if set time interval has passed
         {
-            vescUart.setCurrent(vescUart.PercentToCurrent(programData.ThrottleValueInPercent)); // sending current value to vesc
+            // vescUart->setCurrent(vescUart->PercentToCurrent(programData.ThrottleValueInPercent)); // sending current value to vesc
+            vescUart->setCurrent(0); // sending current value to vesc
 
             lastThrootleWrite = millis();                         // reading time 
         }

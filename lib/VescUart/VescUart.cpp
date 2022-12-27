@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "VescUart.h"
 
+
 VescUart::VescUart(uint32_t timeout_ms) : _TIMEOUT(timeout_ms)
 {
 	nunchuck.valueX = 127;
