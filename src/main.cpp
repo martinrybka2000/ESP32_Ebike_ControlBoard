@@ -55,6 +55,7 @@ Oled::valueUnit units[] = {Oled::VOLT, Oled::SPEED, Oled::TEMPERATURE, Oled::PRO
 void setup()
 {
   Serial.begin(115200);                            // serial communication for debuging
+  VESC_SERIAL.begin(9600);                         // initializing vesc serial for comunication
 
   oled.setup(sizeof(names)/ sizeof(names[0]));     // one time oled setup (needs arrey size)
   ledBlinker.setup(LED_PIN);                       // one time led setup
