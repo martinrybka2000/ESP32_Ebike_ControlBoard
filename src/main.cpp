@@ -31,6 +31,8 @@
 
 #define CNT_WIFI_CONNECTION 20 // hom many times the esp trys to coonect to wifi f.e. 20*100ms = 2s
 
+#define OLED_SETTING        1  //  Can choose betwen simple (1) display and extened (2)
+
 // wifi hotspot password for testing
 const char* ssid = "Redmi";
 const char* password = "87654123";
@@ -49,8 +51,50 @@ VESCComunicator vescComunicator;
 LEDBlinker ledBlinker;
 ServerSender serverSender;
 
-String names[] = {"Battery", "Speed", "Battery", "Test1", "Test2", "Test3", "Test4", "Test5"};                       // display name of the data
-Oled::valueUnit units[] = {Oled::VOLT, Oled::SPEED, Oled::TEMPERATURE, Oled::PROCENT, Oled::AMPER, Oled::PROCENT, Oled::AMPER, Oled::AMPER}; // unit of the data chosen from enum inside oled class
+#if (OLED_SETTING == 1)
+// display name of the data
+String names[] = { 
+"Speed", 
+"Battery Volt"};          
+
+// unit of the data chosen from enum inside oled class
+Oled::valueUnit units[] = {
+Oled::PROCENT, 
+Oled::VOLT}; 
+#endif
+
+#if (OLED_SETTING == 2)
+// display name of the data
+String names[] = { 
+"Speed", 
+"RPM",
+"Battery Volt",
+"Battery Current",
+"Battery temp", 
+"Amp", 
+"Amp Charged", 
+"Watt", 
+"Watt Charged", 
+"BLDC Current", 
+"BLDC temp",
+"Mofset temp"};          
+
+// unit of the data chosen from enum inside oled class
+Oled::valueUnit units[] = {
+Oled::PROCENT, 
+Oled::RPM, 
+Oled::VOLT, 
+Oled::AMPER, 
+Oled::TEMPERATURE, 
+Oled::AMPER, 
+Oled::AMPER_H, 
+Oled::WATT,
+Oled::WATT_H, 
+Oled::AMPER,
+Oled::TEMPERATURE, 
+Oled::TEMPERATURE}; 
+#endif
+
 
 void setup()
 {
@@ -109,8 +153,36 @@ void loop()
   // reading the temp value
   temperatureReader.ReadTemperatureToProgramData(programData, TEM_SENSOR_TIME_INTERVAL_MS);
 
-  // oled tests
-  float data[] = {programData.ThrottleValueInVoltage, programData.ThrottleValueInPercent, programData.BatteryTemperature, 69, 100, 15, 20, 35}; // data to display
+  #if OLED_SETTING == 1
+  // program data passed to oled
+  // data to display
+  float data[] = {
+  programData.ThrottleValueInPercent, //speed
+  programData.VescData.inpVoltage,  // battery voltage
+  };
+  #endif
+
+  #if OLED_SETTING == 2
+  // program data passed to oled
+  // data to display
+  float data[] = {
+  programData.ThrottleValueInPercent, //speed
+  programData.VescData.rpm,
+
+  programData.VescData.inpVoltage,  // battery voltage
+  programData.VescData.avgInputCurrent, // battery current
+  programData.BatteryTemperature, //Battery temp
+
+  programData.VescData.ampHours,  //amp
+  programData.VescData.ampHoursCharged, //amp charged
+  programData.VescData.wattHours, //watt
+  programData.VescData.wattHoursCharged, //watt charged 
+
+  programData.VescData.avgMotorCurrent, //bldc current
+  programData.VescData.tempMotor, // bldc temp
+  programData.VescData.tempMosfet // mosfet temp
+  };
+  #endif
 
   oled.show(names, data, units, OLED_SWITH_INTERVAL_MS, OLED_SHOW_INTERVAL_MS); // method to display data on oled
   //Serial.println(oled.bug); // FOR DEBUGING
