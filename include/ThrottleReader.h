@@ -24,15 +24,15 @@ class ThrottleReader {
                 dataSmoother.AddData(analogRead(adc_pin));           // reading adc value into the data smoother algoythm
 
                 // this solution is only used in this particural situation, normaly initialization should be used to determine low and max value
-                if(((dataSmoother.GetData() / ADC_MAX_VALUE) - (MIN_ERROR_VALUE / REFERENCE_VOLTAGE) * 100 ) * CORRECTION <= 0) { // check if there is any value below 0
+                if((((dataSmoother.GetData() / ADC_MAX_VALUE) - (MIN_ERROR_VALUE / REFERENCE_VOLTAGE)) * 100 ) * CORRECTION <= 0) { // check if there is any value below 0
                     programData.ThrottleValueInPercent = 0; // getting around below 0 values
                 }
                 else {
-                    programData.ThrottleValueInPercent = ((dataSmoother.GetData() / ADC_MAX_VALUE) - (MIN_ERROR_VALUE / REFERENCE_VOLTAGE) * 100 ) * CORRECTION; // removing the minimum value to get 0 %
+                    programData.ThrottleValueInPercent = (((dataSmoother.GetData() / ADC_MAX_VALUE) - (MIN_ERROR_VALUE / REFERENCE_VOLTAGE)) * 100 ) * CORRECTION; // removing the minimum value to get 0 %
                 }
 
                 // this solution is only used in this particural situation, normaly initialization should be used to determine low and max value
-                if(((dataSmoother.GetData() * REFERENCE_VOLTAGE) / ADC_MAX_VALUE) - (MIN_ERROR_VALUE)) * CORRECTION <= 0) {
+                if((((dataSmoother.GetData() * REFERENCE_VOLTAGE) / ADC_MAX_VALUE) - (MIN_ERROR_VALUE)) * CORRECTION <= 0) {
                     programData.ThrottleValueInVoltage = 0; // getting around below 0 values
                 }
                 else {
