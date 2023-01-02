@@ -23,8 +23,8 @@ class ThrottleReader {
 
                 dataSmoother.AddData(analogRead(adc_pin));           // reading adc value into the data smoother algoythm
             //    programData.ThrottleValueInPercent = dataSmoother.GetData() * (100.0 / ADC_MAX_VALUE);             // saving the values to program data
-                programData.ThrottleValueInPercent = (((dataSmoother.GetData() - MIN_ERROR_VALUE) * CORRECTION) / ADC_MAX_VALUE); // removing the minimum value to get 0 %
-                programData.ThrottleValueInVoltage = ((dataSmoother.GetData() - MIN_ERROR_VALUE) * CORRECTION) * (REFERENCE_VOLTAGE / ADC_MAX_VALUE);       
+                programData.ThrottleValueInPercent = (((dataSmoother.GetData() * 100) / ADC_MAX_VALUE) - (MIN_ERROR_VALUE)) * CORRECTION; // removing the minimum value to get 0 %
+                programData.ThrottleValueInVoltage = (((dataSmoother.GetData() * REFERENCE_VOLTAGE) / ADC_MAX_VALUE) - (MIN_ERROR_VALUE)) * CORRECTION;       
 
                 lastTempRequest = millis();                                                                        // reading the last time for calculating interval
             }
