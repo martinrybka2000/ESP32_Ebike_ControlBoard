@@ -21,7 +21,7 @@
 #define TEM_SENSOR_TIME_INTERVAL_MS 1000 // how often to read the temperature value
 #define LED_BLINK_TIME_INTERVAL_MS  2000 // how often the led should blink
 #define VESC_DATA_READ_INTERVAL_MS  500  // how often should i read data from vesc
-#define BESC_WRITE_CURRNET_INTERVL_MS 50 // how often should the current value be written to vesc
+#define VESC_WRITE_CURRNET_INTERVL_MS 50 // how often should the current value be written to vesc
 #define SERVER_POST_DATA_INTERVAL_MS 2000 // how often should the data be send to the server
 
 #define THROTTLE_PIN    A6  // analog input from throttle
@@ -145,7 +145,7 @@ void loop()
   throttle.getThrootleToProgramData(programData, THROTTLE_PIN, THROTTLE_TIME_INTERVAL_MS);
 
   // writing current to vesc
-  vescComunicator.writeThrootleValue(programData, VESC_DATA_READ_INTERVAL_MS);
+  vescComunicator.writeThrootleValue(programData, VESC_WRITE_CURRNET_INTERVL_MS);
 
   // reading vesc values
   vescComunicator.getDataToProgramData(programData, VESC_DATA_READ_INTERVAL_MS);

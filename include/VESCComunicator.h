@@ -49,8 +49,8 @@ public:
     {
         if (millis() - lastThrootleWrite >= interval_ms)          // if set time interval has passed
         {
-            // vescUart->setCurrent(vescUart->PercentToCurrent(programData.ThrottleValueInPercent)); // sending current value to vesc
-            vescUart->setCurrent(0); // sending current value to vesc
+            vescUart->setCurrent(vescUart->PercentToCurrent(programData.ThrottleValueInPercent)); // sending current value to vesc
+            // vescUart->setCurrent(0); // sending current value to vesc
 
             lastThrootleWrite = millis();                         // reading time 
         }
