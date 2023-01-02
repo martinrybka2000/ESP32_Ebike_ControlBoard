@@ -6,7 +6,7 @@
 #define ADC_MAX_VALUE      4096.0// maximum value that we can read from adc
 #define MIN_ERROR_VALUE    0.684 // min voltage that can be read from potencjometr
 //#define MAX_ERROR_VALUE    3.0   // max voltage that can be read from potencjomter
-#define CORRECTION         1.364 // value muliplayer used to corret the offset of the voltage
+#define CORRECTION         1.9 // value muliplayer used to corret the offset of the voltage
 
 DataSmoother dataSmoother(SMOOTH_BUFFER_SIZE); // fpr smoothing input data
 
