@@ -77,6 +77,10 @@ void Oled::dataLoop(String * elementName, float * elementValue, valueUnit * unit
             case AMPER:
                 _display.print("A"); // amperes
                 break;
+            
+            case AMPER_H:
+                _display.print("Ah"); // amperes hours
+                break;
 
             case TEMPERATURE:
                 _display.setTextSize(TEXT_SIZE * 0.5); // smaller text for the "degree" symbol
@@ -85,7 +89,19 @@ void Oled::dataLoop(String * elementName, float * elementValue, valueUnit * unit
                 _display.setTextSize(TEXT_SIZE); // bigger text size for celcius char
                 _display.print("C"); // celcius char
                 break;
+
+            case WATT:
+                _display.print("W");  // watts
+                break;
+
+            case WATT_H:
+                _display.print("Wh");  // watts hours
+                break;
             
+            case RPM:
+                _display.print("rpm"); // amperes hours
+                break;
+
             default:
                 _display.print(" "); // NULL handler
                 break;

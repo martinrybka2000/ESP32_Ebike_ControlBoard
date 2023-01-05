@@ -23,7 +23,7 @@ class Oled {
 
         float bug;                  // ONLY FOR DEBUGGING
 
-        enum valueUnit {TEMPERATURE, PROCENT, SPEED, VOLT, AMPER}; // enum to choose in what unit display value
+        enum valueUnit {TEMPERATURE, PROCENT, SPEED, VOLT, AMPER, AMPER_H, WATT, WATT_H, RPM}; // enum to choose in what unit display value
 
         void setup(size_t paramCnt);// initiazlization of oled display
 
