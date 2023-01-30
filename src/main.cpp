@@ -31,7 +31,7 @@
 
 #define CNT_WIFI_CONNECTION 20 // hom many times the esp trys to coonect to wifi f.e. 20*100ms = 2s
 
-#define OLED_SETTING        1  //  Can choose betwen simple (1) display and extened (2)
+#define OLED_SETTING        2  //  Can choose betwen simple (1) display and extened (2)
 
 // wifi hotspot password for testing
 const char* ssid = "Redmi";

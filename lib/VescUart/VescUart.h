@@ -6,7 +6,7 @@
 #include "buffer.h"
 #include "crc.h"
 
-#define BLDC_MAX_CURRENT 30
+#define BLDC_MAX_CURRENT 30.0
 #define ADC_RESOLUTION 1023
 #define MAX_PERCENT 100.0
 
